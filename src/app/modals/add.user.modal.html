@@ -1,0 +1,48 @@
+<ion-header>
+    <ion-toolbar color="tertiary">
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                <ion-icon name="close" color="light"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>
+            {{ modal.title }}
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <form [formGroup]="addUserForm" novalidate (ngSubmit)="addUserFormSubmit()">
+        <ion-list inset>
+            <ion-item [class.has-error]="addUserForm.get('name').hasError('required') && addUserForm.get('name').touched">
+                <ion-label position="floating">name *</ion-label>
+                <ion-input type="text" formControlName="name" required></ion-input>
+            </ion-item>
+            <ion-item *ngIf="addUserForm.get('name').hasError('required') && addUserForm.get('name').touched" no-lines>
+                <div class="error-message">
+                    This field is required.
+                </div>
+            </ion-item>
+            <ion-item [class.has-error]="addUserForm.get('city').hasError('required') && addUserForm.get('city').touched">
+                <ion-label position="floating">city *</ion-label>
+                <ion-textarea formControlName="city"></ion-textarea>
+            </ion-item>
+            <ion-item *ngIf="addUserForm.get('city').hasError('required') && addUserForm.get('city').touched" no-lines>
+                <div class="error-message">
+                    This field is required.
+                </div>
+            </ion-item>
+            <ion-item [class.has-error]="addUserForm.get('country').hasError('required') && addUserForm.get('country').touched">
+                <ion-label position="floating">country *</ion-label>
+                <ion-input type="text" formControlName="country"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="addUserForm.get('country').hasError('required') && addUserForm.get('country').touched" no-lines>
+                <div class="error-message">
+                    This field is required.
+                </div>
+            </ion-item>
+        </ion-list>
+        <ion-button type="submit" color="primary" [disabled]='!addUserForm.valid'>{{ modal.buttonText }}</ion-button>
+        <ion-button color="danger" [disabled]='!addUserForm.valid' (click)="clearAddUserForm()">Clear</ion-button>
+    </form>
+</ion-content>
