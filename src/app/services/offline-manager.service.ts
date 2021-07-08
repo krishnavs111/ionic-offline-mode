@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable object-shorthand */
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
@@ -15,17 +16,28 @@ const STORAGE_REQ_KEY = 'storedreq';
   providedIn: 'root'
 })
 export class OfflineManagerService {
-  constructor(private storage: Storage, private toastCtrl: ToastController, private http: HttpClient) { }
+  private _storage: Storage | null = null;
+
+  constructor(private storage: Storage, private toastCtrl: ToastController, private http: HttpClient) {
+    this.init();
+  }
+
+  async init() {
+    console.log('init -- offline manager');
+    // If using, define drivers here: await this.storage.defineDriver(/*...*/);
+    const storage = await this.storage.create();
+    this._storage = storage;
+  }
 
   checkForEvents() {
-    return from(this.storage.get(STORAGE_REQ_KEY)).pipe(
+    return from(this._storage?.get(STORAGE_REQ_KEY) || []).pipe(
       switchMap((storedOperations: any) => {
         const storedObj = JSON.parse(storedOperations);
         if (storedObj && storedObj.length > 0) {
           return this.sendRequests(storedObj).pipe(
             finalize(() => {
               this.presentToast(`Local data succesfully synced to API!`);
-              this.storage.remove(STORAGE_REQ_KEY);
+              this._storage.remove(STORAGE_REQ_KEY);
             })
           );
         } else {
@@ -72,7 +84,7 @@ export class OfflineManagerService {
     };
     // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 
-    return this.storage.get(STORAGE_REQ_KEY).then(storedOperations => {
+    return this._storage.get(STORAGE_REQ_KEY).then(storedOperations => {
       let storedObj = JSON.parse(storedOperations);
 
       if (storedObj) {
@@ -81,7 +93,7 @@ export class OfflineManagerService {
         storedObj = [action];
       }
       // Save old & new local transactions back to Storage
-      return this.storage.set(STORAGE_REQ_KEY, JSON.stringify(storedObj));
+      return this._storage.set(STORAGE_REQ_KEY, JSON.stringify(storedObj));
     });
   }
 }

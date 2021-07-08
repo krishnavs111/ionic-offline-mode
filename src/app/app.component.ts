@@ -18,21 +18,21 @@ export class AppComponent {
     private statusBar: StatusBar,
     private networkService: NetworkService,
     private offlineManager: OfflineManagerService
-    ) {
+  ) {
+    this.initializeApp();
+  }
 
-      this.initializeApp();
-    }
-    initializeApp() {
-      this.platform.ready().then(() => {
-        this.statusBar.styleDefault();
-        this.splashScreen.hide();
-        this.networkService.onNetworkChange().subscribe((status: ConnectionStatus) => {
-          if (status === ConnectionStatus.Online) {
-            console.log('status in app.component', status);
-            this.offlineManager.checkForEvents().subscribe();
-          }
-        });
+  initializeApp() {
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+      this.networkService.onNetworkChange().subscribe((status: ConnectionStatus) => {
+        if (status === ConnectionStatus.Online) {
+          console.log('status in app.component', status);
+          this.offlineManager.checkForEvents().subscribe();
+        }
       });
-    }
+    });
+  }
 
 }

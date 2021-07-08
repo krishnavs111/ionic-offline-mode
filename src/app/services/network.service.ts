@@ -17,23 +17,24 @@ export enum ConnectionStatus {
 })
 export class NetworkService {
 
-  private status: BehaviorSubject<ConnectionStatus> =new BehaviorSubject(ConnectionStatus.Offline);
-  private loading: any =null;
+  private status: BehaviorSubject<ConnectionStatus> = new BehaviorSubject(ConnectionStatus.Offline);
+  private loading: any = null;
 
   constructor(private toastController: ToastController, private loadingCtrl: LoadingController) {
     console.log('NetworkService::constructor | method called');
 
     let status = ConnectionStatus.Offline;
-    if(Capacitor.platform ==='web'){
+    if (Capacitor.platform === 'web') {
       console.log('WEB');
       console.log('navigator.onLine', navigator.onLine);
       this.addConnectivityListenersBrowser();
-      status =  navigator.onLine === true ? ConnectionStatus.Online : ConnectionStatus.Offline;
-    }
-    else {
+      status = navigator.onLine === true ? ConnectionStatus.Online : ConnectionStatus.Offline;
+      this.updateNetworkStatus(status);
+    } else {
       console.log('NATIVE');
       this.addConnectivityListernerNative();
-      // status = Network.getStatus();
+      status = Network.getStatus();
+      this.updateNetworkStatus(status);
     }
   }
 
@@ -43,7 +44,6 @@ export class NetworkService {
   }
 
   addConnectivityListernerNative() {
-
     const handler = Network.addListener('networkStatusChange', (status) => {
       console.log('Network status changed', status);
     });
@@ -66,6 +66,7 @@ export class NetworkService {
       this.updateNetworkStatus(ConnectionStatus.Offline);
     }
   }
+
   private async updateNetworkStatus(status: ConnectionStatus) {
     console.log('updateNetworkStatus', status);
     this.status.next(status);
