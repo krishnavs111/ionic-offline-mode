@@ -111,8 +111,9 @@ See Encryption Support below for more information.
 **Configuration**
 
 **Angular configuration**
-      import { Drivers, Storage } from '@ionic/storage';
-      import { IonicStorageModule } from '@ionic/storage-angular';
+
+       import { Drivers, Storage } from '@ionic/storage';
+       import { IonicStorageModule } from '@ionic/storage-angular';
 
       @NgModule({
         //...
