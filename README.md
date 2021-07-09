@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 
-=======
 **Ionic Storage**
 
 **Installation**
